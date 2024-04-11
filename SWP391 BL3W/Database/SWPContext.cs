@@ -24,5 +24,6 @@ namespace SWP391_BL3W.Database
         public DbSet<Review> Reviews { get; set; }
         public DbSet<CategoryBlog> CategoryBlogs { get; set; }
         public DbSet<OrderProductsDetails> OrderProductsDetails { get; set; }
+        public DbSet<Image> Images { get; set; }
     }
 }
