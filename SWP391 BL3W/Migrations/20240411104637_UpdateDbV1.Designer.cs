@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using SWP391_BL3W.Database;
 
@@ -11,9 +12,10 @@ using SWP391_BL3W.Database;
 namespace SWP391_BL3W.Migrations
 {
     [DbContext(typeof(SWPContext))]
-    partial class SWPContextModelSnapshot : ModelSnapshot
+    [Migration("20240411104637_UpdateDbV1")]
+    partial class UpdateDbV1
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder

@@ -6,6 +6,7 @@ using SWP391_BL3W.DTO.Response;
 using SWP391_BL3W.Repository.Interface;
 using SWP391_BL3W.Services.Interface;
 using System.Net;
+using static System.Net.Mime.MediaTypeNames;
 
 namespace SWP391_BL3W.Services
 {
@@ -15,13 +16,15 @@ namespace SWP391_BL3W.Services
         private readonly IBaseRepository<Products> _baseRepository;
         private readonly SWPContext _context;
         private readonly IBaseRepository<ProductsDetails> _category;
+        private readonly IBaseRepository<Images> _image;
 
-        public ProductService(IMapper mapper, IBaseRepository<Products> baseRepository, SWPContext context, IBaseRepository<ProductsDetails> category)
+        public ProductService(IMapper mapper, IBaseRepository<Products> baseRepository, SWPContext context, IBaseRepository<ProductsDetails> category, IBaseRepository<Images> images)
         {
             _mapper = mapper;
             _baseRepository = baseRepository;
             _context = context;
             _category = category;
+            _image = images;
         }
 
         public async Task<StatusResponse<CreateProductDTO>> create(CreateProductDTO dto)
@@ -35,22 +38,32 @@ namespace SWP391_BL3W.Services
                     if (existingProduct != null)
                     {
                         response.statusCode = HttpStatusCode.BadRequest;
-                        response.Errormessge = "Sản phẩm đã tồn tại!";
+                        response.Errormessge = "Product is exist!";
                         return response;
                     }
 
                     var existingCategory = await _context.Categories.Where(x => x.CategoryID == dto.CategoryID).FirstOrDefaultAsync();
                     if (existingCategory == null)
                     {
-                        response.statusCode = HttpStatusCode.BadRequest;
-                        response.Errormessge = "Danh mục không tồn tại!";
+                        response.statusCode = HttpStatusCode.NotFound;
+                        response.Errormessge = "Category Not Found";
                         return response;
                     }
 
                     var productEntity = _mapper.Map<Products>(dto);
                     productEntity.Category = existingCategory;
-
                     await _baseRepository.AddAsync(productEntity);
+                    await _baseRepository.SaveChangesAsync();
+
+                    foreach (var imageDTO in dto.ImageDTOs)
+                    {
+                        var image = new Images
+                        {
+                            Url = imageDTO.Url,
+                            ProductId = productEntity.Id
+                        };
+                        await _image.AddAsync(image);
+                    }
                     await _baseRepository.SaveChangesAsync();
                     response.Data = dto;
                     response.statusCode = HttpStatusCode.Created;
@@ -60,7 +73,7 @@ namespace SWP391_BL3W.Services
                 {
                     transaction.Rollback();
                     response.statusCode = HttpStatusCode.InternalServerError;
-                    response.Errormessge = "Đã xảy ra lỗi khi tạo sản phẩm.";
+                    response.Errormessge = $"Error: {ex.Message}";
                     return response;
                 }
                 transaction.Commit();
@@ -68,15 +81,154 @@ namespace SWP391_BL3W.Services
             }
         }
 
-
-        public Task<StatusResponse<Products>> getAll(int? size, int? page)
+        public async Task<StatusResponse<ProductsResponseDTO>> getAll(int? size, int? page)
         {
-            throw new NotImplementedException();
+            var response = new StatusResponse<ProductsResponseDTO>();
+            try
+            {
+                int pageSize = size ?? 15;
+                int pageNumber = page ?? 1;
+                List<Products> allProducts = await _context.Products.ToListAsync();
+                int totalItems = allProducts.Count;
+                int totalPages = (int)Math.Ceiling((double)totalItems / pageSize);
+
+                var productsForPage = allProducts
+                .Skip((pageNumber - 1) * pageSize)
+                .Take(pageSize)
+                .Select(p => new ProductDTO
+                {
+                    Id = p.Id,
+                    Name = p.Name,
+                    Description = p.Description,
+                    ImageUrl = p.ImageUrl,
+                    Quantity = p.quantity,
+                    Price = p.price
+                }).ToList();
+                var responseDTO = new ProductsResponseDTO
+                {
+                    Products = productsForPage,
+                    TotalPages = totalPages,
+                    CurrentPage = pageNumber,
+                    PageSize = pageSize,
+                    TotalItems = totalItems
+                };
+                response.Data = responseDTO;
+                response.statusCode = HttpStatusCode.OK;
+                response.Errormessge = "Get all products with pagination successfully.";
+            }
+            catch (Exception ex)
+            {
+                response.statusCode = HttpStatusCode.InternalServerError;
+                response.Errormessge = ex.Message;
+                response.Data = null;
+                return response;
+            }
+            return response;
         }
 
-        public Task<StatusResponse<Products>> getProductbyId(int id)
+        public async Task<StatusResponse<ProductDetailsResponseDTO>> getProductDetailbyId(int id)
         {
-            throw new NotImplementedException();
+            var response = new StatusResponse<ProductDetailsResponseDTO>();
+            try
+            {
+                var product = await _context.Products
+                    .Include(p => p.Details)
+                    .Include(p => p.Images)
+                    .Include(p => p.Reviews)
+                    .FirstOrDefaultAsync(p => p.Id == id);
+
+                if (product == null)
+                {
+                    response.statusCode = HttpStatusCode.NotFound;
+                    response.Errormessge = "Product not found.";
+                    return response;
+                }
+                var productDetailsResponseDTO = new ProductDetailsResponseDTO
+                {
+                    Products = new ProductDTOs
+                    {
+                        Id = product.Id,
+                        Name = product.Name,
+                        Description = product.Description,
+                        Quantity = product.quantity,
+                        Price = product.price,
+                        WarrantyPeriod = product.WarrantyPeriod,
+                        CategoryID = product.CategoryID
+                    },
+                    Details = product.Details.Select(d => new ProductsDetailDTO
+                    {
+                        Id = d.Id,
+                        Name = d.Name,
+                        Value = d.Value
+                    }).ToList(),
+                    Images = product.Images.Select(i => new ImageDTOs
+                    {
+                        Id = i.Id,
+                        Url = i.Url
+                    }).ToList(),
+                    Reviews = product.Reviews.Select(r => new ReviewDTO
+                    {
+                        Id = r.Id,
+                        UserId = r.UserId,
+                        Comment = r.Comment,
+                        Rating = r.Rating
+                    }).ToList()
+                };
+
+                response.Data = productDetailsResponseDTO;
+                response.statusCode = HttpStatusCode.OK;
+                response.Errormessge = "Successful";
+            }
+            catch (Exception ex)
+            {
+                response.statusCode = HttpStatusCode.BadRequest;
+                response.Errormessge = ex.Message;
+                response.Data = null;
+            }
+
+            return response;
+        }
+
+        public Task<StatusResponse<ProductsResponseDTO>> search(int?page, int? size, string name, int? watt, int? volt, string? producer)
+        {
+            var response = new StatusResponse<ProductsResponseDTO>();
+            try
+            {
+                int pageSize = size ?? 15;
+                int pageNumber = page ?? 1;
+
+            }
+            catch (Exception ex)
+            {
+                response.statusCode = HttpStatusCode.InternalServerError;
+                response.Errormessge = ex.Message;
+            }
+            return response;
+        }
+
+        public async Task<StatusResponse<UpdateProductsDTO>> updateProduct(UpdateProductsDTO dto)
+        {
+            var response = new StatusResponse<UpdateProductsDTO>();
+            try
+            {
+                var existingProduct = await _context.Products.Where(x => x.Id == dto.Id).FirstOrDefaultAsync();
+                if (existingProduct == null)
+                {
+                    response.statusCode = HttpStatusCode.NotFound;
+                    response.Errormessge = "Not Found Products!!";
+                    return response;
+                }
+                _mapper.Map(dto, existingProduct);
+                await _context.SaveChangesAsync();
+                response.Data = dto;
+                response.statusCode = HttpStatusCode.OK;
+                response.Errormessge = "Successful";
+            }catch(Exception ex)
+            {
+                response.statusCode = HttpStatusCode.InternalServerError;
+                response.Errormessge=ex.Message;
+            }
+            return response;
         }
     }
 }

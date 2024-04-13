@@ -17,6 +17,7 @@ namespace SWP391_BL3W.Extensions
             //Register Service here
             services.AddScoped<IUserService, UserService>();
             services.AddScoped<IProductService, ProductService>();
+            services.AddScoped<IAuthService, AuthService>();
 
             return services;
         }

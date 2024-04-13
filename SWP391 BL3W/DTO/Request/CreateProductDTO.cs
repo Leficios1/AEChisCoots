@@ -7,7 +7,7 @@ namespace SWP391_BL3W.DTO.Request
         [Required(ErrorMessage = "Tên sản phẩm là bắt buộc.")]
         public string Name { get; set; }
 
-        public string Description { get; set; }
+        public string? Description { get; set; }
 
         [Url(ErrorMessage = "Url hình ảnh không hợp lệ.")]
         public string ImageUrl { get; set; }
@@ -25,6 +25,7 @@ namespace SWP391_BL3W.DTO.Request
         [Required(ErrorMessage = "Danh mục là bắt buộc.")]
 
         public List<ProductDetailDTO> Details { get; set; }
+        public List<ImageDTO> ImageDTOs { get; set; }
     }
 
     public class ProductDetailDTO
@@ -34,6 +35,11 @@ namespace SWP391_BL3W.DTO.Request
 
         [Required(ErrorMessage = "Giá trị chi tiết sản phẩm là bắt buộc.")]
         public string Value { get; set; }
+    }
+    public class ImageDTO
+    {
+        [Url]
+        public string Url { get; set; }
     }
 }
 

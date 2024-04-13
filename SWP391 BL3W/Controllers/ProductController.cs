@@ -21,11 +21,30 @@ namespace SWP391_BL3W.Controllers
             _productService = productService;
             _mapper = mapper;
         }
+        [HttpGet("getAll")]
+        public async Task<IActionResult> getAll(int? size, int? page)
+        {
+            var response = await _productService.getAll(size, page);
+            return StatusCode((int)response.statusCode, new { data = response.Data, message = response.Errormessge });
+        }
+        [HttpGet("getDetailsById/{id}")]
+        public async Task<IActionResult> getProductsDetailsById ([FromRoute] int id)
+        {
+            var response = await _productService.getProductDetailbyId(id);
+            return StatusCode((int)response.statusCode, new { data = response.Data, message = response.Errormessge });
+        }
 
-        [HttpPost("/create")]
+        [HttpPost("create")]
         public async Task<IActionResult> create(CreateProductDTO dto)
         {
             var response = await _productService.create(dto);
+            return StatusCode((int)response.statusCode, new { data = response.Data, message = response.Errormessge });
+        }
+
+        [HttpPut("update")]
+        public async Task<IActionResult> update(UpdateProductsDTO dto)
+        {
+            var response = await _productService.updateProduct(dto);
             return StatusCode((int)response.statusCode, new { data = response.Data, message = response.Errormessge });
         }
     }
