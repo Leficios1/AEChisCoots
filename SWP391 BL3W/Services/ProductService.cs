@@ -15,10 +15,10 @@ namespace SWP391_BL3W.Services
         private readonly IMapper _mapper;
         private readonly IBaseRepository<Product> _baseRepository;
         private readonly SWPContext _context;
-        private readonly IBaseRepository<ProductsDetail> _category;
+        private readonly IBaseRepository<ProductsDetails> _category;
         private readonly IBaseRepository<Images> _image;
 
-        public ProductService(IMapper mapper, IBaseRepository<Product> baseRepository, SWPContext context, IBaseRepository<ProductsDetail> category, IBaseRepository<Images> images)
+        public ProductService(IMapper mapper, IBaseRepository<Product> baseRepository, SWPContext context, IBaseRepository<ProductsDetails> category, IBaseRepository<Images> images)
         {
             _mapper = mapper;
             _baseRepository = baseRepository;

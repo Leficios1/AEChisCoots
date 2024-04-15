@@ -5,7 +5,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace SWP391_BL3W.Migrations
 {
-    public partial class InitDB : Migration
+    public partial class UpdB : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -33,6 +33,28 @@ namespace SWP391_BL3W.Migrations
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_CategoryBlog", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "OnlineTransactions",
+                columns: table => new
+                {
+                    TransactionId = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    BankTranNo = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    PayDate = table.Column<DateTime>(type: "datetime2", nullable: true),
+                    OrderInfo = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    ResponseCode = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    TransactionStatus = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    CardType = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    TxnRef = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    Amount = table.Column<long>(type: "bigint", nullable: false),
+                    BankCode = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    OrderId = table.Column<int>(type: "int", nullable: false),
+                    UserId = table.Column<int>(type: "int", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_OnlineTransactions", x => x.TransactionId);
                 });
 
             migrationBuilder.CreateTable(
@@ -303,7 +325,7 @@ namespace SWP391_BL3W.Migrations
             migrationBuilder.InsertData(
                 table: "User",
                 columns: new[] { "Id", "Address", "AvatarUrl", "DateOfBirth", "Email", "Gender", "Name", "Password", "RoleId", "phone", "status" },
-                values: new object[] { 1, "HCM", "https://inkythuatso.com/uploads/thumbnails/800/2023/03/9-anh-dai-dien-trang-inkythuatso-03-15-27-03.jpg", new DateTime(2024, 4, 15, 21, 50, 3, 553, DateTimeKind.Local).AddTicks(8518), "admin@gmail.com", "Male", "admin", "12345", 1, "0321456789", true });
+                values: new object[] { 1, "HCM", "https://inkythuatso.com/uploads/thumbnails/800/2023/03/9-anh-dai-dien-trang-inkythuatso-03-15-27-03.jpg", new DateTime(2024, 4, 16, 0, 56, 27, 565, DateTimeKind.Local).AddTicks(5304), "admin@gmail.com", "Male", "admin", "12345", 1, "0321456789", true });
 
             migrationBuilder.CreateIndex(
                 name: "IX_Blog_CategoryBlogId",
@@ -381,6 +403,9 @@ namespace SWP391_BL3W.Migrations
 
             migrationBuilder.DropTable(
                 name: "Image");
+
+            migrationBuilder.DropTable(
+                name: "OnlineTransactions");
 
             migrationBuilder.DropTable(
                 name: "OrderDetail");

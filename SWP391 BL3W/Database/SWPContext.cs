@@ -19,12 +19,11 @@ namespace SWP391_BL3W.Database
         public DbSet<OrderDetail> OrderDetails { get; set; }
         public DbSet<Cart> Carts { get; set; }
         public DbSet<Role> Roles { get; set; }
-        public DbSet<ProductsDetail> ProductsDetails { get; set; }
+        public DbSet<ProductsDetails> ProductsDetails { get; set; }
         public DbSet<Blog> Blogs { get; set; }
         public DbSet<OnlineTransaction> OnlineTransactions { get; set; }
         public DbSet<Review> Reviews { get; set; }
         public DbSet<CategoryBlog> CategoryBlogs { get; set; }
-        //public DbSet<OrderProductsDetails> OrderProductsDetails { get; set; }
         public DbSet<Images> Images { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)

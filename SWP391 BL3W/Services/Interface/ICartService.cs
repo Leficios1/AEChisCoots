@@ -11,7 +11,7 @@ namespace SWP391_BL3W.Services.Interface
         public Task<bool> CompletedPaymentCartToOrder(int userId, PaymentDTO paymentDTO); 
 
         public Task<bool> DeleteAllProductsInCartByUserId(int userId);
-
+        public Task<bool> DeleteProductIdInCartByUserId(int userId, int productId);
         public Task<CartDTO[]> GetCartsByUserId (int userId);
     }
 }

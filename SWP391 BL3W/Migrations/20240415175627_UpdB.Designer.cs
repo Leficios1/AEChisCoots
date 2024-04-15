@@ -12,8 +12,8 @@ using SWP391_BL3W.Database;
 namespace SWP391_BL3W.Migrations
 {
     [DbContext(typeof(SWPContext))]
-    [Migration("20240415145208_UpdateDb")]
-    partial class UpdateDb
+    [Migration("20240415175627_UpdB")]
+    partial class UpdB
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -176,8 +176,8 @@ namespace SWP391_BL3W.Migrations
                     b.Property<string>("OrderInfo")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("PayDate")
-                        .HasColumnType("nvarchar(max)");
+                    b.Property<DateTime?>("PayDate")
+                        .HasColumnType("datetime2");
 
                     b.Property<string>("ResponseCode")
                         .HasColumnType("nvarchar(max)");
@@ -455,7 +455,7 @@ namespace SWP391_BL3W.Migrations
                             Id = 1,
                             Address = "HCM",
                             AvatarUrl = "https://inkythuatso.com/uploads/thumbnails/800/2023/03/9-anh-dai-dien-trang-inkythuatso-03-15-27-03.jpg",
-                            DateOfBirth = new DateTime(2024, 4, 15, 21, 52, 8, 378, DateTimeKind.Local).AddTicks(9876),
+                            DateOfBirth = new DateTime(2024, 4, 16, 0, 56, 27, 565, DateTimeKind.Local).AddTicks(5304),
                             Email = "admin@gmail.com",
                             Gender = "Male",
                             Name = "admin",

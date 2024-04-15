@@ -28,7 +28,7 @@ namespace SWP391_BL3W.Database
 
         //Navigations
         public ICollection<Cart> Carts { get; set; }
-        public ICollection<ProductsDetail> Details { get; set; }
+        public ICollection<ProductsDetails> Details { get; set; }
         public ICollection<Review> Reviews { get; set; }
         public ICollection<Images> Images { get; set; }
         public ICollection<OrderDetail> OrderDetails { get; set; }

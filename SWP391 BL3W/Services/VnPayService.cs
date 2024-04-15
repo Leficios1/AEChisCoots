@@ -16,15 +16,16 @@ namespace SWP391_BL3W.Services
         private IBaseRepository<OnlineTransaction> _onlineTransaction;
         private IBaseRepository<User> _userRepository;
         private IBaseRepository<Order> _orderRepository;
-        private readonly IHttpClientFactory _httpClientFactory;
-
-        public VnPayService(IBaseRepository<User> userRepository, IHttpClientFactory httpClientFactory, 
-            IBaseRepository<OnlineTransaction> onlineTransaction, IBaseRepository<Order> orderRepository)
+  
+        private readonly IBaseRepository<Product> _productRepository;
+        public VnPayService(IBaseRepository<User> userRepository, 
+            IBaseRepository<OnlineTransaction> onlineTransaction, IBaseRepository<Order> orderRepository,IBaseRepository<Product> productRepo)
         {
             _onlineTransaction = onlineTransaction;
             _userRepository = userRepository;
-            _httpClientFactory = httpClientFactory;
+        
             _orderRepository=orderRepository;
+            _productRepository = productRepo;
         }
         
         public async Task<ResponsePayment> GetInformationPayment(int userId, string urlResponse)
@@ -46,10 +47,10 @@ namespace SWP391_BL3W.Services
             }
       
 
-            string orderId = vnpay.GetResponseData("vnp_TxnRef").Split("-")[0];
+            string orderId = vnpay.GetResponseData("vnp_OrderInfo").Replace("+", " ").Replace("%3A", ":").Split(":")[1].Trim();
             string vnpayTranId = vnpay.GetResponseData("vnp_TransactionNo");
             string vnp_ResponseCode = vnpay.GetResponseData("vnp_ResponseCode");
-            string orderInfo = vnpay.GetResponseData("vnp_OrderInfo").Replace("+", " ").Replace("%3", ":");
+            string orderInfo = vnpay.GetResponseData("vnp_OrderInfo").Replace("+", " ").Replace("%3A", ":");
             String vnp_SecureHash = vnpay.GetResponseData("vnp_SecureHash");
             String TerminalID = vnpay.GetResponseData("vnp_TmnCode");
             long vnp_Amount = Convert.ToInt64(vnpay.GetResponseData("vnp_Amount")) / 100;
@@ -61,11 +62,8 @@ namespace SWP391_BL3W.Services
             string cardType = vnpay.GetResponseData("vnp_CardType");
             string payDate = vnpay.GetResponseData("vnp_PayDate");
             string hashSecret = vnpay.GetResponseData("vnp_HashSecret");
-           /*if(hashSecret!=vnp_HashSecret)
-            {
-                throw new Exception($"You have no permission to access this transaction."); 
-            }
-            */
+       
+           
             var responseCodeMessage = ReturnedErrorMessageResponseCode(responseCode);
             var transactionStatusMessage = ReturnedErrorMessageTransactionStatus(transactionStatus);
             VnPayResponse response = new VnPayResponse()
@@ -83,12 +81,19 @@ namespace SWP391_BL3W.Services
             };
             if (vnp_ResponseCode == "00" && transactionStatus == "00")
             {
-                var order = await _orderRepository.Get().Where(x => x.OrderId == Int32.Parse(orderId)).FirstOrDefaultAsync();
+                var order = await _orderRepository.Get().Include(x=>x.OrdersDetail).ThenInclude(x=>x.Product).Where(x => x.OrderId == Int32.Parse(orderId)).FirstOrDefaultAsync();
                 if (order == null) throw new Exception("Error to payment: Can not find order to payment");
                 order.status = 1;
                 _orderRepository.Update(order);
                 await _orderRepository.SaveChangesAsync();
-
+                if(order.OrdersDetail != null) 
+                foreach(var item in order.OrdersDetail)
+                {
+                        var product = item.Product;
+                        product.quantity -= item.Quantity;
+                        _productRepository.Update(product);
+                }
+                await _productRepository.SaveChangesAsync();
             }
             var newTransaction = new OnlineTransaction()
             {
@@ -98,7 +103,7 @@ namespace SWP391_BL3W.Services
                 BankCode = bankCode,
                 BankTranNo = bankTranNo,
                 CardType = cardType,
-                PayDate = DateTime.ParseExact(orderId, "yyyyMMddHHmmss", CultureInfo.InvariantCulture, DateTimeStyles.None),
+                PayDate = DateTime.ParseExact(payDate, "yyyyMMddHHmmss", CultureInfo.InvariantCulture, DateTimeStyles.None),
                 ResponseCode = responseCode,
                 TransactionStatus = transactionStatus,
                 OrderId = Int32.Parse(orderId),
@@ -118,32 +123,38 @@ namespace SWP391_BL3W.Services
             return payment;
     
         }
-
-        public async Task<string> Pay(int userId, int orderId)
+        public async Task<string> CallAPIPayByUserId(int userId, int orderId)
         {
             try
-            {
+            {   
+               
                 string vnp_ReturnUrl = "/result";
                 string vnp_Url = "https://sandbox.vnpayment.vn/paymentv2/vpcpay.html";
-                string vnp_TmnCode = "F8V1A5TK"; 
-                string vnp_HashSecret = "GCLECYOCZYQLDTIUGHGWZAWPNALXPLOJ"; 
+                string vnp_TmnCode = "F8V1A5TK";
+                string vnp_HashSecret = "GCLECYOCZYQLDTIUGHGWZAWPNALXPLOJ";
                 if (string.IsNullOrEmpty(vnp_TmnCode) || string.IsNullOrEmpty(vnp_HashSecret))
                 {
                     throw new Exception("Merchant code or secret key is missing.");
                 }
-                var order = await _orderRepository.Get().Where(x => x.OrderId == orderId).FirstOrDefaultAsync();
-                if(order==null) 
+                var order = await _orderRepository.Get().Include(x=>x.OrdersDetail).ThenInclude(x=>x.Product).Where(x => x.OrderId == orderId).FirstOrDefaultAsync();
+                if (order == null)
                 {
                     throw new Exception("There is no order that has: " + orderId);
                 }
                 if (order.status != 0)
                 {
-                   if(order.status==1) throw new Exception("Order is payed.");
-                   if (order.status == -1) throw new Exception("order is canceled");
+                    if (order.status == 1) throw new Exception("Order is payed.");
+                    if (order.status == -1) throw new Exception("order is canceled");
                 }
-                var amount = order.TotalPrice.ToString();
-                var vnp_TxnRef = $"{order.OrderId}-{DateTime.UtcNow.ToString("yyyyMMddHHmmss")}";
-                var vnp_Amount = amount; 
+                
+                if (order.OrdersDetail != null)
+                foreach(var item in order.OrdersDetail) 
+                {
+                        if (item.Quantity > item.Product.quantity) throw new Exception($"Product that has id {item.ProductId} is not enough to buy. Number os available product is {item.Product.quantity}");
+                }
+                var amount = ((long)order.TotalPrice*100).ToString();
+                var vnp_TxnRef = $"{userId}{order.OrderId}{DateTime.Now.ToString("HHmmss")}";
+                var vnp_Amount = amount;
 
                 var vnpay = new VnPayLibrary();
                 vnpay.AddRequestData("vnp_Version", "2.1.0");
@@ -154,13 +165,13 @@ namespace SWP391_BL3W.Services
                 vnpay.AddRequestData("vnp_CurrCode", "VND");
                 vnpay.AddRequestData("vnp_IpAddr", Utils.GetIpAddress());
                 vnpay.AddRequestData("vnp_Locale", "vn");
-                vnpay.AddRequestData("vnp_OrderInfo", $"Payment for order: {vnp_TxnRef}");
+                vnpay.AddRequestData("vnp_OrderInfo", $"Payment for order: {orderId}");
                 vnpay.AddRequestData("vnp_OrderType", "order");
                 vnpay.AddRequestData("vnp_ReturnUrl", vnp_ReturnUrl);
                 vnpay.AddRequestData("vnp_TxnRef", vnp_TxnRef);
                 vnpay.AddRequestData("vnp_ExpireDate", DateTime.Now.AddMinutes(2).ToString("yyyyMMddHHmmss"));
 
-               
+
                 string paymentUrl = vnpay.CreateRequestUrl(vnp_Url, vnp_HashSecret);
                 return paymentUrl;
             }
@@ -168,11 +179,6 @@ namespace SWP391_BL3W.Services
             {
                 throw new Exception($"An error occurred during payment: {ex.Message}");
             }
-        }
-        public async Task<string> CallAPIPayByUserId(int userId, int orderId)
-        {
-            string paymentUrl = await Pay(userId, orderId);
-            return paymentUrl;
         }
         private string ReturnedErrorMessageTransactionStatus(string code)
         {

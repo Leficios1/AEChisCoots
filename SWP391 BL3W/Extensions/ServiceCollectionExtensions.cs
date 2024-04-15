@@ -20,6 +20,8 @@ namespace SWP391_BL3W.Extensions
             services.AddScoped<IProductService, ProductService>();
             services.AddScoped<IAuthService, AuthService>();
             services.AddScoped<IOrderService, OrderService>();
+            services.AddScoped<ICartService, CartService>();
+            services.AddScoped<IPaymentOnlineService,VnPayService>();   
 
             services.AddHttpContextAccessor();
             services.AddTransient<Utils>();
