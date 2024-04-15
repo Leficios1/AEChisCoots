@@ -2,6 +2,7 @@
 using SWP391_BL3W.Repository;
 using SWP391_BL3W.Services;
 using SWP391_BL3W.Services.Interface;
+using SWP391_BL3W.DTO.ModelPaymentOnline;
 
 namespace SWP391_BL3W.Extensions
 {
@@ -18,7 +19,12 @@ namespace SWP391_BL3W.Extensions
             services.AddScoped<IUserService, UserService>();
             services.AddScoped<IProductService, ProductService>();
             services.AddScoped<IAuthService, AuthService>();
+            services.AddScoped<ICartService, CartService>();
+            services.AddScoped<IPaymentOnlineService,VnPayService>();
+            services.AddHttpClient();
 
+            services.AddHttpContextAccessor();
+            services.AddTransient<Utils>();
             return services;
         }
     }

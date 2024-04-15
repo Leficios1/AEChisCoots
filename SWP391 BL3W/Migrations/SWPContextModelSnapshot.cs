@@ -117,7 +117,7 @@ namespace SWP391_BL3W.Migrations
                     b.ToTable("CategoryBlog");
                 });
 
-            modelBuilder.Entity("SWP391_BL3W.Database.Image", b =>
+            modelBuilder.Entity("SWP391_BL3W.Database.Images", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -147,11 +147,20 @@ namespace SWP391_BL3W.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("OrderId"), 1L, 1);
 
+                    b.Property<string>("AddressCustomer")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("NameCustomer")
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<DateTime>("OrderDate")
                         .HasColumnType("datetime2");
 
                     b.Property<string>("PaymentName")
                         .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("PhoneCustomer")
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<decimal>("TotalPrice")
@@ -247,8 +256,8 @@ namespace SWP391_BL3W.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<DateTime>("WarrantyPeriod")
-                        .HasColumnType("datetime2");
+                    b.Property<int>("WarrantyPeriod")
+                        .HasColumnType("int");
 
                     b.Property<decimal>("price")
                         .HasColumnType("decimal(18,2)");
@@ -422,7 +431,7 @@ namespace SWP391_BL3W.Migrations
                     b.Navigation("User");
                 });
 
-            modelBuilder.Entity("SWP391_BL3W.Database.Image", b =>
+            modelBuilder.Entity("SWP391_BL3W.Database.Images", b =>
                 {
                     b.HasOne("SWP391_BL3W.Database.Products", "Product")
                         .WithMany("Images")

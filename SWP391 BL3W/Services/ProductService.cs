@@ -189,7 +189,7 @@ namespace SWP391_BL3W.Services
             return response;
         }
 
-        public Task<StatusResponse<ProductsResponseDTO>> search(int?page, int? size, string name, int? watt, int? volt, string? producer)
+        public async Task<StatusResponse<ProductsResponseDTO>> search(int?page, int? size, string name, int? watt, int? volt, string? producer)
         {
             var response = new StatusResponse<ProductsResponseDTO>();
             try

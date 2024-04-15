@@ -7,6 +7,7 @@ namespace SWP391_BL3W.Database
     public class Cart
     {
         [Key]
+        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public int Id { get; set; }
         //Fk
         public int UserId { get; set; }

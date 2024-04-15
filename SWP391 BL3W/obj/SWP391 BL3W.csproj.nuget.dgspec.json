@@ -1,24 +1,20 @@
 {
   "format": 1,
   "restore": {
-    "D:\\Dev\\Project C#\\SWP của ae chí cốt\\BE\\SWP391 BL3W\\SWP391 BL3W.csproj": {}
+    "E:\\AEChisCoots\\SWP391 BL3W\\SWP391 BL3W.csproj": {}
   },
   "projects": {
-    "D:\\Dev\\Project C#\\SWP của ae chí cốt\\BE\\SWP391 BL3W\\SWP391 BL3W.csproj": {
+    "E:\\AEChisCoots\\SWP391 BL3W\\SWP391 BL3W.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "D:\\Dev\\Project C#\\SWP của ae chí cốt\\BE\\SWP391 BL3W\\SWP391 BL3W.csproj",
+        "projectUniqueName": "E:\\AEChisCoots\\SWP391 BL3W\\SWP391 BL3W.csproj",
         "projectName": "SWP391 BL3W",
-        "projectPath": "D:\\Dev\\Project C#\\SWP của ae chí cốt\\BE\\SWP391 BL3W\\SWP391 BL3W.csproj",
-        "packagesPath": "C:\\Users\\Admin\\.nuget\\packages\\",
-        "outputPath": "D:\\Dev\\Project C#\\SWP của ae chí cốt\\BE\\SWP391 BL3W\\obj\\",
+        "projectPath": "E:\\AEChisCoots\\SWP391 BL3W\\SWP391 BL3W.csproj",
+        "packagesPath": "C:\\Users\\BIN\\.nuget\\packages\\",
+        "outputPath": "E:\\AEChisCoots\\SWP391 BL3W\\obj\\",
         "projectStyle": "PackageReference",
-        "fallbackFolders": [
-          "D:\\VSStudio\\Shared\\NuGetPackages"
-        ],
         "configFilePaths": [
-          "C:\\Users\\Admin\\AppData\\Roaming\\NuGet\\NuGet.Config",
-          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.FallbackLocation.config",
+          "C:\\Users\\BIN\\AppData\\Roaming\\NuGet\\NuGet.Config",
           "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
         ],
         "originalTargetFrameworks": [
@@ -69,6 +65,10 @@
             "Swashbuckle.AspNetCore": {
               "target": "Package",
               "version": "[6.5.0, )"
+            },
+            "Telegram.Bot": {
+              "target": "Package",
+              "version": "[19.0.0, )"
             }
           },
           "imports": [
@@ -90,7 +90,7 @@
               "privateAssets": "all"
             }
           },
-          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\7.0.400\\RuntimeIdentifierGraph.json"
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\7.0.402\\RuntimeIdentifierGraph.json"
         }
       }
     }

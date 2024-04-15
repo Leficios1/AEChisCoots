@@ -7,6 +7,7 @@ namespace SWP391_BL3W.Database
     public class OrderDetails
     {
         [Key]
+        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public int ID { get; set; }
         //Fk
         public int OrderID { get; set; }
