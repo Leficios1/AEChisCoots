@@ -13,12 +13,12 @@ namespace SWP391_BL3W.Services
     public class ProductService : IProductService
     {
         private readonly IMapper _mapper;
-        private readonly IBaseRepository<Products> _baseRepository;
+        private readonly IBaseRepository<Product> _baseRepository;
         private readonly SWPContext _context;
-        private readonly IBaseRepository<ProductsDetails> _category;
+        private readonly IBaseRepository<ProductsDetail> _category;
         private readonly IBaseRepository<Images> _image;
 
-        public ProductService(IMapper mapper, IBaseRepository<Products> baseRepository, SWPContext context, IBaseRepository<ProductsDetails> category, IBaseRepository<Images> images)
+        public ProductService(IMapper mapper, IBaseRepository<Product> baseRepository, SWPContext context, IBaseRepository<ProductsDetail> category, IBaseRepository<Images> images)
         {
             _mapper = mapper;
             _baseRepository = baseRepository;
@@ -50,7 +50,7 @@ namespace SWP391_BL3W.Services
                         return response;
                     }
 
-                    var productEntity = _mapper.Map<Products>(dto);
+                    var productEntity = _mapper.Map<Product>(dto);
                     productEntity.Category = existingCategory;
                     await _baseRepository.AddAsync(productEntity);
                     await _baseRepository.SaveChangesAsync();
@@ -88,7 +88,7 @@ namespace SWP391_BL3W.Services
             {
                 int pageSize = size ?? 15;
                 int pageNumber = page ?? 1;
-                List<Products> allProducts = await _context.Products.ToListAsync();
+                List<Product> allProducts = await _context.Products.ToListAsync();
                 int totalItems = allProducts.Count;
                 int totalPages = (int)Math.Ceiling((double)totalItems / pageSize);
 

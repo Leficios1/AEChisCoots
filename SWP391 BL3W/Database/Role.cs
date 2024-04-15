@@ -7,6 +7,8 @@ namespace SWP391_BL3W.Database
     public class Role
     {
         [Key]
+        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
+
         public int RoleId { get; set; }
         public string RoleName { get; set; } = null!;
         //Navigation

@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using SWP391_BL3W.Database;
 
@@ -11,9 +12,10 @@ using SWP391_BL3W.Database;
 namespace SWP391_BL3W.Migrations
 {
     [DbContext(typeof(SWPContext))]
-    partial class SWPContextModelSnapshot : ModelSnapshot
+    [Migration("20240415082734_UpdateDBv3")]
+    partial class UpdateDBv3
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -68,6 +70,9 @@ namespace SWP391_BL3W.Migrations
                     b.Property<int>("ProductId")
                         .HasColumnType("int");
 
+                    b.Property<int>("ProductsId")
+                        .HasColumnType("int");
+
                     b.Property<int>("Quantity")
                         .HasColumnType("int");
 
@@ -98,18 +103,6 @@ namespace SWP391_BL3W.Migrations
                     b.HasKey("CategoryID");
 
                     b.ToTable("Category");
-
-                    b.HasData(
-                        new
-                        {
-                            CategoryID = 1,
-                            CategoryName = "Ấm siêu tốc"
-                        },
-                        new
-                        {
-                            CategoryID = 2,
-                            CategoryName = "Bếp điện từ"
-                        });
                 });
 
             modelBuilder.Entity("SWP391_BL3W.Database.CategoryBlog", b =>
@@ -334,23 +327,6 @@ namespace SWP391_BL3W.Migrations
                     b.HasKey("RoleId");
 
                     b.ToTable("Role");
-
-                    b.HasData(
-                        new
-                        {
-                            RoleId = 1,
-                            RoleName = "Admin"
-                        },
-                        new
-                        {
-                            RoleId = 2,
-                            RoleName = "Customer"
-                        },
-                        new
-                        {
-                            RoleId = 3,
-                            RoleName = "Staff"
-                        });
                 });
 
             modelBuilder.Entity("SWP391_BL3W.Database.User", b =>
@@ -403,22 +379,6 @@ namespace SWP391_BL3W.Migrations
                     b.HasIndex("RoleId");
 
                     b.ToTable("User");
-
-                    b.HasData(
-                        new
-                        {
-                            Id = 1,
-                            Address = "HCM",
-                            AvatarUrl = "https://inkythuatso.com/uploads/thumbnails/800/2023/03/9-anh-dai-dien-trang-inkythuatso-03-15-27-03.jpg",
-                            DateOfBirth = new DateTime(2024, 4, 15, 15, 40, 43, 52, DateTimeKind.Local).AddTicks(7672),
-                            Email = "admin@gmail.com",
-                            Gender = "Male",
-                            Name = "admin",
-                            Password = "12345",
-                            RoleId = 1,
-                            phone = "0321456789",
-                            status = true
-                        });
                 });
 
             modelBuilder.Entity("SWP391_BL3W.Database.Blog", b =>

@@ -7,6 +7,8 @@ namespace SWP391_BL3W.Database
     public class Images
     {
         [Key]
+        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
+
         public int Id { get; set; }
         [Required]
         [Url]
@@ -14,6 +16,6 @@ namespace SWP391_BL3W.Database
         // FK
         public int ProductId { get; set; }
         // Navigation
-        public Products Product { get; set; }
+        public Product Product { get; set; }
     }
 }
