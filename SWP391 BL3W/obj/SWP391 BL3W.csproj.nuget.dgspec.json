@@ -1,17 +1,17 @@
 {
   "format": 1,
   "restore": {
-    "D:\\Dev\\Project C#\\SWP của ae chí cốt\\BE\\SWP391 BL3W\\SWP391 BL3W.csproj": {}
+    "D:\\Dev\\Project C#\\swp391\\BE\\SWP391 BL3W\\SWP391 BL3W.csproj": {}
   },
   "projects": {
-    "D:\\Dev\\Project C#\\SWP của ae chí cốt\\BE\\SWP391 BL3W\\SWP391 BL3W.csproj": {
+    "D:\\Dev\\Project C#\\swp391\\BE\\SWP391 BL3W\\SWP391 BL3W.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "D:\\Dev\\Project C#\\SWP của ae chí cốt\\BE\\SWP391 BL3W\\SWP391 BL3W.csproj",
+        "projectUniqueName": "D:\\Dev\\Project C#\\swp391\\BE\\SWP391 BL3W\\SWP391 BL3W.csproj",
         "projectName": "SWP391 BL3W",
-        "projectPath": "D:\\Dev\\Project C#\\SWP của ae chí cốt\\BE\\SWP391 BL3W\\SWP391 BL3W.csproj",
+        "projectPath": "D:\\Dev\\Project C#\\swp391\\BE\\SWP391 BL3W\\SWP391 BL3W.csproj",
         "packagesPath": "C:\\Users\\Admin\\.nuget\\packages\\",
-        "outputPath": "D:\\Dev\\Project C#\\SWP của ae chí cốt\\BE\\SWP391 BL3W\\obj\\",
+        "outputPath": "D:\\Dev\\Project C#\\swp391\\BE\\SWP391 BL3W\\obj\\",
         "projectStyle": "PackageReference",
         "fallbackFolders": [
           "D:\\VSStudio\\Shared\\NuGetPackages"

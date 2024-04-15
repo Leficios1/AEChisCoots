@@ -18,7 +18,7 @@ namespace SWP391_BL3W.Database
         public Products Products { get; set; }
 
         //Navigation
-        public ICollection<OrderProductsDetails> OrderProductsDetails { get; set; }
+        //public ICollection<OrderProductsDetails> OrderProductsDetails { get; set; }
 
 
     }

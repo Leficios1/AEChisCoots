@@ -34,6 +34,13 @@ namespace SWP391_BL3W.Controllers
             return StatusCode((int)response.statusCode, new { data = response.Data, message = response.Errormessge });
         }
 
+        [HttpGet("search")]
+        public async Task<IActionResult> search(int? page, int? size, string name, int? watt, int? volt, string? producer)
+        {
+            var response = await _productService.search(page, size, name, watt, volt, producer);
+            return StatusCode((int)response.statusCode, new { data = response.Data, message = response.Errormessge });
+        }
+
         [HttpPost("create")]
         public async Task<IActionResult> create(CreateProductDTO dto)
         {

@@ -29,6 +29,7 @@ namespace SWP391_BL3W.Database
         public ICollection<ProductsDetails> Details { get; set; }
         public ICollection<Review> Reviews { get; set; }
         public ICollection<Images> Images { get; set; }
+        public ICollection<OrderDetails> OrderDetails { get; set; }
 
     }
 }

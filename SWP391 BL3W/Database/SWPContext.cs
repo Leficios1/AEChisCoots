@@ -23,7 +23,7 @@ namespace SWP391_BL3W.Database
         public DbSet<Blog> Blogs { get; set; }
         public DbSet<Review> Reviews { get; set; }
         public DbSet<CategoryBlog> CategoryBlogs { get; set; }
-        public DbSet<OrderProductsDetails> OrderProductsDetails { get; set; }
+        //public DbSet<OrderProductsDetails> OrderProductsDetails { get; set; }
         public DbSet<Images> Images { get; set; }
     }
 }

@@ -189,7 +189,7 @@ namespace SWP391_BL3W.Services
             return response;
         }
 
-        public Task<StatusResponse<ProductsResponseDTO>> search(int?page, int? size, string name, int? watt, int? volt, string? producer)
+        public async Task<StatusResponse<ProductsResponseDTO>> search(int? page, int? size, string name, int? watt, int? volt, string? producer)
         {
             var response = new StatusResponse<ProductsResponseDTO>();
             try
@@ -197,6 +197,46 @@ namespace SWP391_BL3W.Services
                 int pageSize = size ?? 15;
                 int pageNumber = page ?? 1;
 
+                var query = _context.Products.AsQueryable();
+                query = query.Where(p => p.Name.ToUpper().Contains(name));
+                if (watt.HasValue)
+                {
+                    query = query.Where(p => p.Details.Any(d => d.Name.Equals("Watt") && d.Value == watt.ToString()));
+                }
+                if (volt.HasValue)
+                {
+                    query = query.Where(p => p.Details.Any(d => d.Name == "Volt" && d.Value == volt.ToString()));
+                }
+                if (!string.IsNullOrEmpty(producer))
+                {
+                    query = query.Where(p => p.Details.Any(d => d.Name == "Producer" && d.Value.Contains(producer)));
+                }
+                if (query == null)
+                {
+                    response.Data = null;
+                    response.statusCode = HttpStatusCode.NotFound;
+                    response.Errormessge = "Not found Product!";
+                    return response;
+                }
+                var totalItems = await query.CountAsync();
+                var totalPages = (int)Math.Ceiling(totalItems / (double)pageSize);
+
+                var products = await query.Skip((pageNumber - 1) * pageSize)
+                            .Take(pageSize)
+                            .ToListAsync();
+
+                var mappedProducts = _mapper.Map<IEnumerable<ProductDTO>>(products);
+
+                response.Data = new ProductsResponseDTO
+                {
+                    Products = mappedProducts.ToList(),
+                    TotalPages = totalPages,
+                    CurrentPage = pageNumber,
+                    PageSize = pageSize,
+                    TotalItems = totalItems
+                };
+                response.statusCode = HttpStatusCode.OK;
+                response.Errormessge = "Success";
             }
             catch (Exception ex)
             {

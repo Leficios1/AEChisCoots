@@ -5,7 +5,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace SWP391_BL3W.Migrations
 {
-    public partial class UpdateDb : Migration
+    public partial class updateDB : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -59,7 +59,7 @@ namespace SWP391_BL3W.Migrations
                     ImageUrl = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     quantity = table.Column<int>(type: "int", nullable: false),
                     price = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
-                    WarrantyPeriod = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    WarrantyPeriod = table.Column<int>(type: "int", nullable: false),
                     CategoryID = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
@@ -98,6 +98,26 @@ namespace SWP391_BL3W.Migrations
                         column: x => x.RoleId,
                         principalTable: "Role",
                         principalColumn: "RoleId",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Image",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    Url = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    ProductId = table.Column<int>(type: "int", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Image", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Image_Products_ProductId",
+                        column: x => x.ProductId,
+                        principalTable: "Products",
+                        principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                 });
 
@@ -186,7 +206,12 @@ namespace SWP391_BL3W.Migrations
                     UserId = table.Column<int>(type: "int", nullable: false),
                     OrderDate = table.Column<DateTime>(type: "datetime2", nullable: false),
                     TotalPrice = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
-                    PaymentName = table.Column<string>(type: "nvarchar(max)", nullable: false)
+                    status = table.Column<int>(type: "int", nullable: false),
+                    statusMessage = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    PaymentName = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    NameCustomer = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    AddressCustomer = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    PhoneCustomer = table.Column<string>(type: "nvarchar(max)", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -237,7 +262,8 @@ namespace SWP391_BL3W.Migrations
                     OrderProductID = table.Column<int>(type: "int", nullable: false),
                     Quantity = table.Column<int>(type: "int", nullable: false),
                     Price = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
-                    ExpiredWarranty = table.Column<DateTime>(type: "datetime2", nullable: false)
+                    ExpiredWarranty = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    ProductsId = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -248,30 +274,10 @@ namespace SWP391_BL3W.Migrations
                         principalTable: "Order",
                         principalColumn: "OrderId",
                         onDelete: ReferentialAction.Cascade);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "OrderProductsDetails",
-                columns: table => new
-                {
-                    Id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    OrderDetailsId = table.Column<int>(type: "int", nullable: false),
-                    ProductsDetailsId = table.Column<int>(type: "int", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_OrderProductsDetails", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_OrderProductsDetails_OrderDetails_OrderDetailsId",
-                        column: x => x.OrderDetailsId,
-                        principalTable: "OrderDetails",
-                        principalColumn: "ID",
-                        onDelete: ReferentialAction.Cascade);
-                    table.ForeignKey(
-                        name: "FK_OrderProductsDetails_ProductDetials_ProductsDetailsId",
-                        column: x => x.ProductsDetailsId,
-                        principalTable: "ProductDetials",
+                        name: "FK_OrderDetails_Products_ProductsId",
+                        column: x => x.ProductsId,
+                        principalTable: "Products",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                 });
@@ -297,6 +303,11 @@ namespace SWP391_BL3W.Migrations
                 column: "UserId");
 
             migrationBuilder.CreateIndex(
+                name: "IX_Image_ProductId",
+                table: "Image",
+                column: "ProductId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_Order_UserId",
                 table: "Order",
                 column: "UserId");
@@ -307,14 +318,9 @@ namespace SWP391_BL3W.Migrations
                 column: "OrderID");
 
             migrationBuilder.CreateIndex(
-                name: "IX_OrderProductsDetails_OrderDetailsId",
-                table: "OrderProductsDetails",
-                column: "OrderDetailsId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_OrderProductsDetails_ProductsDetailsId",
-                table: "OrderProductsDetails",
-                column: "ProductsDetailsId");
+                name: "IX_OrderDetails_ProductsId",
+                table: "OrderDetails",
+                column: "ProductsId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_ProductDetials_ProductsId",
@@ -351,19 +357,19 @@ namespace SWP391_BL3W.Migrations
                 name: "Cart");
 
             migrationBuilder.DropTable(
-                name: "OrderProductsDetails");
-
-            migrationBuilder.DropTable(
-                name: "Review");
-
-            migrationBuilder.DropTable(
-                name: "CategoryBlog");
+                name: "Image");
 
             migrationBuilder.DropTable(
                 name: "OrderDetails");
 
             migrationBuilder.DropTable(
                 name: "ProductDetials");
+
+            migrationBuilder.DropTable(
+                name: "Review");
+
+            migrationBuilder.DropTable(
+                name: "CategoryBlog");
 
             migrationBuilder.DropTable(
                 name: "Order");

@@ -19,6 +19,7 @@ namespace SWP391_BL3W.Mapping
             CreateMap<ProductDetailDTO, ProductsDetails>();
 
             CreateMap<UpdateProductsDTO,Products>().ReverseMap();
+            CreateMap<ProductDTO, Products>().ReverseMap();
         }
     }
 }

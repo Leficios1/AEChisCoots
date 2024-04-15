@@ -1,8 +1,8 @@
 {
   "version": 2,
-  "dgSpecHash": "XK3wxNGHTEVrfCQWs9hV2IKJN9K1MsCzhHJGByZ1It8x6caxVlkEXPkdMb2vRixI6GPL8lW1GxqxcNKTH/jHJw==",
+  "dgSpecHash": "zu0llxgXRbkbK2fzjZaV6bHExXvfISpFTcpqzbUNMFU3L7EtIHCTnnOzzQ9YRJUqEuDu62jA4QMfMCOByYXAWg==",
   "success": true,
-  "projectFilePath": "D:\\Dev\\Project C#\\SWP của ae chí cốt\\BE\\SWP391 BL3W\\SWP391 BL3W.csproj",
+  "projectFilePath": "D:\\Dev\\Project C#\\swp391\\BE\\SWP391 BL3W\\SWP391 BL3W.csproj",
   "expectedPackageFiles": [
     "C:\\Users\\Admin\\.nuget\\packages\\automapper\\12.0.1\\automapper.12.0.1.nupkg.sha512",
     "C:\\Users\\Admin\\.nuget\\packages\\automapper.extensions.microsoft.dependencyinjection\\12.0.1\\automapper.extensions.microsoft.dependencyinjection.12.0.1.nupkg.sha512",

@@ -18,7 +18,7 @@ namespace SWP391_BL3W.DTO.Response
         public string Description { get; set; }
         public int Quantity { get; set; }
         public decimal Price { get; set; }
-        public DateTime WarrantyPeriod { get; set; }
+        public int WarrantyPeriod { get; set; }
         public int CategoryID { get; set; }
     }
 
