@@ -8,6 +8,7 @@ namespace SWP391_BL3W.Database
     {
         [Key]
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
+
         public int Id { get; set; }
         [MaxLength(255)]
         public string Name { get; set; } = null!;

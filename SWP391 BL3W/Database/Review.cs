@@ -8,6 +8,8 @@ namespace SWP391_BL3W.Database
     public class Review
     {
         [Key]
+        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
+
         public int Id {  get; set; }
         [Required]
         public int UserId {  get; set; }
@@ -19,6 +21,6 @@ namespace SWP391_BL3W.Database
 
         // Navigation properties
         public User User { get; set; }
-        public Products Product { get; set; }
+        public Product Product { get; set; }
     }
 }

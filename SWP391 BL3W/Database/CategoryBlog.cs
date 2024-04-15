@@ -7,6 +7,8 @@ namespace SWP391_BL3W.Database
     public class CategoryBlog
     {
         [Key]
+        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
+
         public int Id {  get; set; }
         [Required]
         public string Name { get; set; }

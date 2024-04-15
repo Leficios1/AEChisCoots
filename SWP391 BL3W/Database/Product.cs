@@ -4,10 +4,12 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace SWP391_BL3W.Database
 {
-    [Table("Products")]
-    public class Products
+    [Table("Product")]
+    public class Product
     {
         [Key]
+        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
+
         public int Id { get; set; }
         [Required]
         public string Name { get; set; } = null!;
@@ -26,10 +28,10 @@ namespace SWP391_BL3W.Database
 
         //Navigations
         public ICollection<Cart> Carts { get; set; }
-        public ICollection<ProductsDetails> Details { get; set; }
+        public ICollection<ProductsDetail> Details { get; set; }
         public ICollection<Review> Reviews { get; set; }
         public ICollection<Images> Images { get; set; }
-        public ICollection<OrderDetails> OrderDetails { get; set; }
+        public ICollection<OrderDetail> OrderDetails { get; set; }
 
     }
 }

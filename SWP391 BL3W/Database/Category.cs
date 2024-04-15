@@ -7,10 +7,12 @@ namespace SWP391_BL3W.Database
     public class Category
     {
         [Key]
+        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
+
         public int CategoryID { get; set; }
         [Required]
         public string CategoryName { get; set; } = null!;
         //Navigation Property
-        public ICollection<Products> Products { get; set; }
+        public ICollection<Product> Product { get; set; }
     }
 }

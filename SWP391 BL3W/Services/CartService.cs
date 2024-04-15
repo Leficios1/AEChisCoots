@@ -27,13 +27,13 @@ namespace SWP391_BL3W.Services
         {
             try
             {
-                var cart = await _cartRepo.Get().Where(x => x.UserId == userId && x.ProductsId == productId).FirstOrDefaultAsync();
+                var cart = await _cartRepo.Get().Where(x => x.UserId == userId && x.ProductId == productId).FirstOrDefaultAsync();
                 if (cart == null)
                 {
                     if (!(await CheckQuantity(1, productId))) throw new Exception("Quanity is not enough to add to cart.");
                     await _cartRepo.AddAsync(new Cart()
                     {
-                        ProductsId = productId,
+                        ProductId = productId,
                         Quantity = 1,
                         UserId = userId
                     });
@@ -54,12 +54,13 @@ namespace SWP391_BL3W.Services
 
         public async Task<bool> CompletedPaymentCartToOrder(int userId, PaymentDTO paymentDTO)
         {
-            var carts = await _cartRepo.Get().Include(x => x.Products).Where(x => x.UserId == userId).ToListAsync();
+            var carts = await _cartRepo.Get().Include(x => x.Product).Where(x => x.UserId == userId).ToListAsync();
             var orderDetails = carts.Select(x => new OrderDetails()
             {
-                ExpiredWarranty = DateTime.Now.AddDays(x.Products.WarrantyPeriod),
-                Price = x.Products.price, 
+                ExpiredWarranty = DateTime.Now.AddDays(x.Product.WarrantyPeriod),
+                Price = x.Product.price, 
                 Quantity = x.Quantity,
+                ProductID= x.ProductId                
 
             }).ToList(); 
 
@@ -77,15 +78,15 @@ namespace SWP391_BL3W.Services
                 status = 0,
                 PhoneCustomer = paymentDTO.PhoneCustomer,
                 statusMessage = "Not Paying",
-                OrdersDetails = orderDetails
+                OrdersDetail= (ICollection<OrderDetail>)orderDetails
             };
-
+            
         
             foreach (var item in orderDetails)
             {
                 item.OrderID = order.OrderId;
             }
-
+            order.OrdersDetail = (ICollection<OrderDetail>)orderDetails;
             await _orderRepo.AddAsync(order);
             await _orderRepo.SaveChangesAsync();
 
@@ -107,12 +108,12 @@ namespace SWP391_BL3W.Services
 
         public async Task<CartDTO[]> GetCartsByUserId(int userId)
         {
-            var returnedCarts = await _cartRepo.Get().Include(x => x.Products).Where(x=>x.UserId==userId).Select(x => new CartDTO()
+            var returnedCarts = await _cartRepo.Get().Include(x => x.Product).Where(x=>x.UserId==userId).Select(x => new CartDTO()
             {
-                ProductId = x.Products.Id,
-                ImageUrl = x.Products.ImageUrl,
-                Price = x.Products.price,
-                ProductName = x.Products.Name,
+                ProductId = x.Product.Id,
+                ImageUrl = x.Product.ImageUrl,
+                Price = x.Product.price,
+                ProductName = x.Product.Name,
                 Quantity = x.Quantity
             }).ToArrayAsync();  
             return returnedCarts;
@@ -122,7 +123,7 @@ namespace SWP391_BL3W.Services
         {
             try
             {
-                var cart = await _cartRepo.Get().Where(x => x.UserId == userId && x.ProductsId == productId).FirstOrDefaultAsync();
+                var cart = await _cartRepo.Get().Where(x => x.UserId == userId && x.ProductId == productId).FirstOrDefaultAsync();
                 if (cart == null) throw new Exception("The product is not exist in the cart of user that has id: " + userId);
                 if (!(await CheckQuantity(quantity, productId))) throw new Exception("Quanity is not enough to update.");
                 cart.Quantity = quantity;
